@@ -10,12 +10,27 @@ import {
   Button,
   Alert,
   Modal,
+  TouchableOpacity,
 } from "react-native";
 
 export default function App() {
   const [cheeseCount, setCheeseCount] = useState(0);
   const [modifier, setModifier] = useState(1);
   const [shopVisibility, setShopVisibility] = useState(false);
+
+  const [graterCount, setGraterCount] = useState(0);
+  const [graterPrice, setGraterPrice] = useState(100);
+
+  const [shredderCount, setShredderCount] = useState(0);
+  const [shredderPrice, setShredderPrice] = useState(200);
+
+  const [blasterCount, setBlasterCount] = useState(0);
+  const [blasterPrice, setBlasterPrice] = useState(500);
+
+  const priceMultiplier = 2;
+  const graterModifier = 1;
+  const shredderModifier = 1.5;
+  const blasterModifier = 2;
 
   const resetButtonHandler = () => {
     Alert.alert(
@@ -73,6 +88,73 @@ export default function App() {
           visible={shopVisibility}
         >
           <View style={styles.modalView}>
+            <View style={styles.modifierShop}>
+              <Text style={styles.shopHeadings}>Tap Modifiers</Text>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <View style={styles.shopItem}>
+                  <Text style={styles.canBuy}>Cheese Grater</Text>
+                  <Text style={styles.shopDescription}>
+                    Adds +{graterModifier} to your Modifier
+                  </Text>
+                  <View style={styles.shopPrice}>
+                    <Text
+                      style={{ ...styles.shopDescription, ...styles.costText }}
+                    >
+                      Cost: {graterPrice}
+                    </Text>
+                  </View>
+                  <View style={styles.shopCount}>
+                    <Text style={styles.shopDescription}>
+                      Count: {graterCount}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <View style={styles.shopItem}>
+                  <Text style={styles.canBuy}>Cheese Shredder</Text>
+                  <Text style={styles.shopDescription}>
+                    Adds +{shredderModifier} to your Modifier
+                  </Text>
+                  <View style={styles.shopPrice}>
+                    <Text
+                      style={{ ...styles.shopDescription, ...styles.costText }}
+                    >
+                      Cost: {shredderPrice}
+                    </Text>
+                  </View>
+                  <View style={styles.shopCount}>
+                    <Text style={styles.shopDescription}>
+                      Count: {shredderCount}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity activeOpacity={0.6}>
+                <View style={styles.shopItem}>
+                  <Text style={styles.canBuy}>Cheese Blaster</Text>
+                  <Text style={styles.shopDescription}>
+                    Adds +{blasterModifier} to your Modifier
+                  </Text>
+                  <View style={styles.shopPrice}>
+                    <Text
+                      style={{ ...styles.shopDescription, ...styles.costText }}
+                    >
+                      Cost: {blasterPrice}
+                    </Text>
+                  </View>
+                  <View style={styles.shopCount}>
+                    <Text style={styles.shopDescription}>
+                      Count: {blasterCount}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.closeModalButton}>
               <Button
                 onPress={() => {
@@ -125,6 +207,53 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1,
     height: "100%",
+  },
+  modifierShop: {
+    paddingTop: 40,
+    paddingHorizontal: 20,
+  },
+  canBuy: {
+    fontSize: 18,
+    color: "white",
+  },
+  shopItem: {
+    backgroundColor: "grey",
+    borderColor: "black",
+    borderRadius: 5,
+    padding: 5,
+    shadowColor: "black",
+    shadowOffset: { width: 3, height: 3 },
+    shadowRadius: 5,
+    shadowOpacity: 1,
+    marginVertical: 10,
+    position: "relative",
+    paddingBottom: 35,
+  },
+  shopHeadings: {
+    color: "white",
+    fontSize: 20,
+  },
+  shopDescription: {
+    color: "white",
+    paddingTop: 5,
+  },
+  shopPrice: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  shopCount: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+  },
+  costText: {
+    fontSize: 18,
+    fontWeight: "bold",
   },
   closeModalButton: {
     position: "absolute",
