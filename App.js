@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   StyleSheet,
@@ -14,7 +14,7 @@ import {
 } from "react-native";
 
 export default function App() {
-  const [cheeseCount, setCheeseCount] = useState(0);
+  const [cheeseCount, setCheeseCount] = useState(99999);
   const [modifier, setModifier] = useState(1);
   const [shopVisibility, setShopVisibility] = useState(false);
 
@@ -27,10 +27,27 @@ export default function App() {
   const [blasterCount, setBlasterCount] = useState(0);
   const [blasterPrice, setBlasterPrice] = useState(500);
 
+  const [mouseCount, setMouseCount] = useState(0);
+  const [mousePrice, setMousePrice] = useState(1000);
+
   const priceMultiplier = 2;
   const graterModifier = 1;
   const shredderModifier = 1.5;
   const blasterModifier = 2;
+  const mouseModifier = 5;
+
+  // const collectPassives = () => {
+  //   setCheeseCount((current) => current + (mouseModifier * mouseCount));
+  // };
+
+  // const passives = setInterval(collectPassives, 5000);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCheeseCount((current) => current + 1 * mouseCount);
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const resetButtonHandler = () => {
     Alert.alert(
@@ -39,7 +56,7 @@ export default function App() {
       [
         {
           text: "No",
-          onPress: () => console.log("Cancel Pressed"),
+          onPress: () => console.log(""),
           style: "cancel",
         },
         {
@@ -55,6 +72,14 @@ export default function App() {
   const resetGame = () => {
     setCheeseCount(0);
     setModifier(1);
+    setGraterCount(0);
+    setGraterPrice(100);
+    setShredderCount(0);
+    setShredderPrice(200);
+    setBlasterCount(0);
+    setBlasterPrice(500);
+    setMouseCount(0);
+    setMousePrice(1000);
   };
 
   const shopButtonHandler = () => {
@@ -65,6 +90,91 @@ export default function App() {
     setCheeseCount((current) => current + 1 * modifier);
   };
 
+  const buyGrater = () => {
+    if (cheeseCount >= graterPrice) {
+      setGraterCount((current) => current + 1);
+      setCheeseCount((current) => current - graterPrice);
+      setModifier((current) => current + graterModifier);
+      setGraterPrice((current) => current * priceMultiplier);
+    } else {
+      Alert.alert(
+        "Not Enough Cheese",
+        `You Need ${graterPrice - cheeseCount} More Cheese To Buy That`,
+        [
+          {
+            text: "Okay",
+            onPress: () => console.log(""),
+            style: "cancel",
+          },
+        ]
+      );
+    }
+  };
+
+  const buyShredder = () => {
+    if (cheeseCount >= shredderPrice) {
+      setShredderCount((current) => current + 1);
+      setCheeseCount((current) => current - shredderPrice);
+      setModifier((current) => current + shredderModifier);
+      setShredderPrice((current) => current * priceMultiplier);
+    } else {
+      Alert.alert(
+        "Not Enough Cheese",
+        `You Need ${shredderPrice - cheeseCount} More Cheese To Buy That`,
+        [
+          {
+            text: "Okay",
+            onPress: () => console.log(""),
+            style: "cancel",
+          },
+        ]
+      );
+    }
+  };
+
+  const buyBlaster = () => {
+    if (cheeseCount >= blasterPrice) {
+      setBlasterCount((current) => current + 1);
+      setCheeseCount((current) => current - blasterPrice);
+      setModifier((current) => current + blasterModifier);
+      setBlasterPrice((current) => current * priceMultiplier);
+    } else {
+      Alert.alert(
+        "Not Enough Cheese",
+        `You Need ${blasterPrice - cheeseCount} More Cheese To Buy That`,
+        [
+          {
+            text: "Okay",
+            onPress: () => console.log(""),
+            style: "cancel",
+          },
+        ]
+      );
+    }
+  };
+
+  // const buyMouse = () => {
+  //   if (cheeseCount >= mousePrice) {
+  //     setMouseCount((current) => current + 1);
+  //     setCheeseCount((current) => current - mousePrice);
+  //     setMousePrice((current) =>
+  //       Math.floor(current * (priceMultiplier * 0.85))
+  //     );
+  //   } else {
+  //     Alert.alert(
+  //       "Not Enough Cheese",
+  //       `You Need ${mousePrice - cheeseCount} More Cheese To Buy That`,
+  //       [
+  //         {
+  //           text: "Okay",
+  //           onPress: () => console.log(""),
+  //           style: "cancel",
+  //         },
+  //       ]
+  //     );
+  //   }
+  // };
+
   let instructions = null;
   let modifierText = null;
 
@@ -73,7 +183,9 @@ export default function App() {
   }
 
   if (modifier > 1) {
-    modifierText = <Text style={styles.modifier}>Modifier: {modifier}</Text>;
+    modifierText = (
+      <Text style={styles.modifier}>Modifier: +{modifier - 1}</Text>
+    );
   }
 
   return (
@@ -89,9 +201,18 @@ export default function App() {
         >
           <View style={styles.modalView}>
             <View style={styles.modifierShop}>
+              <Text
+                style={{
+                  ...styles.shopHeadings,
+                  fontSize: 24,
+                  marginBottom: 5,
+                }}
+              >
+                Cheese: {cheeseCount}
+              </Text>
               <Text style={styles.shopHeadings}>Tap Modifiers</Text>
 
-              <TouchableOpacity activeOpacity={0.6}>
+              <TouchableOpacity activeOpacity={0.6} onPress={buyGrater}>
                 <View style={styles.shopItem}>
                   <Text style={styles.canBuy}>Cheese Grater</Text>
                   <Text style={styles.shopDescription}>
@@ -99,7 +220,14 @@ export default function App() {
                   </Text>
                   <View style={styles.shopPrice}>
                     <Text
-                      style={{ ...styles.shopDescription, ...styles.costText }}
+                      style={{
+                        ...styles.shopDescription,
+                        ...styles.costText,
+                        color: cheeseCount >= graterPrice ? "white" : "red",
+                        textShadowColor: "black",
+                        textShadowOffset: { height: 2, width: 2 },
+                        textShadowRadius: 3,
+                      }}
                     >
                       Cost: {graterPrice}
                     </Text>
@@ -112,7 +240,7 @@ export default function App() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.6}>
+              <TouchableOpacity activeOpacity={0.6} onPress={buyShredder}>
                 <View style={styles.shopItem}>
                   <Text style={styles.canBuy}>Cheese Shredder</Text>
                   <Text style={styles.shopDescription}>
@@ -120,7 +248,14 @@ export default function App() {
                   </Text>
                   <View style={styles.shopPrice}>
                     <Text
-                      style={{ ...styles.shopDescription, ...styles.costText }}
+                      style={{
+                        ...styles.shopDescription,
+                        ...styles.costText,
+                        color: cheeseCount >= shredderPrice ? "white" : "red",
+                        textShadowColor: "black",
+                        textShadowOffset: { height: 2, width: 2 },
+                        textShadowRadius: 3,
+                      }}
                     >
                       Cost: {shredderPrice}
                     </Text>
@@ -133,7 +268,7 @@ export default function App() {
                 </View>
               </TouchableOpacity>
 
-              <TouchableOpacity activeOpacity={0.6}>
+              <TouchableOpacity activeOpacity={0.6} onPress={buyBlaster}>
                 <View style={styles.shopItem}>
                   <Text style={styles.canBuy}>Cheese Blaster</Text>
                   <Text style={styles.shopDescription}>
@@ -141,7 +276,14 @@ export default function App() {
                   </Text>
                   <View style={styles.shopPrice}>
                     <Text
-                      style={{ ...styles.shopDescription, ...styles.costText }}
+                      style={{
+                        ...styles.shopDescription,
+                        ...styles.costText,
+                        color: cheeseCount >= blasterPrice ? "white" : "red",
+                        textShadowColor: "black",
+                        textShadowOffset: { height: 2, width: 2 },
+                        textShadowRadius: 3,
+                      }}
                     >
                       Cost: {blasterPrice}
                     </Text>
@@ -153,6 +295,34 @@ export default function App() {
                   </View>
                 </View>
               </TouchableOpacity>
+              {/* <Text style={styles.shopHeadings}>Passive Modifiers</Text>
+              <TouchableOpacity activeOpacity={0.6} onPress={buyMouse}>
+                <View style={styles.shopItem}>
+                  <Text style={styles.canBuy}>Mouse</Text>
+                  <Text style={styles.shopDescription}>
+                    Adds +{mouseModifier} Cheese/5 Seconds
+                  </Text>
+                  <View style={styles.shopPrice}>
+                    <Text
+                      style={{
+                        ...styles.shopDescription,
+                        ...styles.costText,
+                        color: cheeseCount >= mousePrice ? "white" : "red",
+                        textShadowColor: "black",
+                        textShadowOffset: { height: 2, width: 2 },
+                        textShadowRadius: 3,
+                      }}
+                    >
+                      Cost: {mousePrice}
+                    </Text>
+                  </View>
+                  <View style={styles.shopCount}>
+                    <Text style={styles.shopDescription}>
+                      Count: {mouseCount}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity> */}
             </View>
 
             <View style={styles.closeModalButton}>
@@ -314,11 +484,12 @@ const styles = StyleSheet.create({
   },
   wrapperCustom: {
     padding: 6,
-    height: 200,
-    width: 200,
+    height: 300,
+    width: 300,
     backgroundColor: "rgba(0,0,0,0)",
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 20,
   },
   logBox: {
     padding: 20,
